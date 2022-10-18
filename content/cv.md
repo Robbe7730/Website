@@ -18,6 +18,9 @@ links:
   - uri: https://www.linkedin.com/in/robbe-van-herck-724aa0181/
     text: Robbe Van Herck
     type: linkedin
+  - uri: https://www.qsl.net/on3umg/
+    text: ON3UMG
+    type: callsign
 education:
   - school: Ghent University
     field: Master Computer Science

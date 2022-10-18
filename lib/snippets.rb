@@ -18,6 +18,8 @@ def contact_point link
     _contact_point link, "fa-brands fa-github", "foaf:account"
   when "linkedin"
     _contact_point link, "fa-brands fa-linkedin-in", "foaf:account"
+  when "callsign"
+    _contact_point link, "fa-solid fa-radio", "schema:callSign"
   else
     <<-HTML
 <b class="todo"> INVALID TYPE </b>
