@@ -26,8 +26,6 @@ function displayDegreeType(predicate) {
 export default function Education(props) {
   const { graph, user } = props;
 
-  // TODO: get all data first so we can avoid "now", sort by start date and
-  // detect when no entries are loaded
   const educations = [];
 
   graph.each(user, CV('hasEducation')).forEach(education => {
