@@ -48,7 +48,6 @@ export default function ContactItems(props) {
         value.forEach(v => values.add(v.value));
       }
     });
-    console.log(values);
     if (!values) {
       return;
     }
@@ -67,7 +66,7 @@ export default function ContactItems(props) {
         displayValue = value.replace('mailto:', '');
       } else if (contactItem[0].value === FOAF('homepage').value) {
         icon = "fas fa-home";
-        displayValue = value;
+        displayValue = value.replace(/https?:\/\//, '');
       } else if (contactItem[0].value === SCHEMA('callSign').value) {
         icon = "fas fa-radio";
         displayValue = value;
