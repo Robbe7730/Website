@@ -42,7 +42,7 @@ export default function Projects(props) {
             key={i}
           >
             <h3>
-              <a property={SCHEMA('codeRepository')} href={project.uri}>
+              <a property={SCHEMA('codeRepository').value} href={project.uri}>
                 <i className="icon fa-brands fa-github"></i>
                 <span
                   property={SCHEMA('name').value + " " + FOAF('name').value}
@@ -61,7 +61,7 @@ export default function Projects(props) {
               return (
                 <span
                   className="project-language"
-                  property={SCHEMA("programmingLanguage")}
+                  property={SCHEMA("programmingLanguage").value}
                   key={i}
                 >
                   {lang}

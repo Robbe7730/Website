@@ -60,7 +60,12 @@ export default function Education(props) {
         {educations[0]?.endDate ?
          (
            <li>
-             <span className="education-year">{educations[0].endDate}</span>
+             <time
+               datetime={educations[0].endDate}
+               className="education-year"
+             >
+               {educations[0].endDate}
+             </time>
            </li>
          )
          : (
@@ -100,12 +105,13 @@ export default function Education(props) {
               >
                 {education.description}
               </span>
-              <span
+              <time
+                datetime={education.startDate}
                 className="education-year"
                 property={CV("eduStartDate").value}
               >
                 {education.startDate}
-              </span>
+              </time>
               {education.endDate && (
                 <span
                   hidden

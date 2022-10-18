@@ -4,6 +4,7 @@ import Page from './Page.jsx';
 import Education from './Education.jsx';
 import Skills from './Skills.jsx';
 import Projects from './Projects.jsx';
+import VolunteerWork from './VolunteerWork.jsx';
 
 export default function Profile(props) {
   return (
@@ -16,6 +17,7 @@ export default function Profile(props) {
           <Projects {...props}/>
         </Page>
         <Page>
+          <VolunteerWork {...props}/>
         </Page>
       </main>
     </div>
