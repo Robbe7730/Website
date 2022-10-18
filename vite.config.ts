@@ -5,6 +5,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    target: 'esnext',
+      target: 'esnext',
+      // sourcemap: true,
+      // manifest: true,
+      // minify: false,
+  },
+  resolve: {
+    alias: {
+      "readable-stream": "vite-compatible-readable-stream",
+    }
   }
 })
