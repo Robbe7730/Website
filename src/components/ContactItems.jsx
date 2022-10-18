@@ -56,6 +56,7 @@ export default function ContactItems(props) {
       let icon;
       let displayValue;
       let isAccount = false;
+      let isURL = true;
       let accountHomepage;
 
       if (value.startsWith('tel:')) {
@@ -70,6 +71,7 @@ export default function ContactItems(props) {
       } else if (contactItem[0].value === SCHEMA('callSign').value) {
         icon = "fas fa-radio";
         displayValue = value;
+        isURL = false;
       } else {
         const accountType = graph.any(rdflib.sym(value), FOAF('accountServiceHomepage'));
         const accountName = graph.any(rdflib.sym(value), FOAF('accountName'));
@@ -92,10 +94,10 @@ export default function ContactItems(props) {
 
       children.push(
         <a
-          href={value}
+          href={isURL ? value : undefined}
           key={key++}
           property={contactItem.map(x => x.value).join(" ")}
-          resource={value}
+          resource={isURL ? value : undefined}
           typeof={isAccount ? FOAF('OnlineAccount').value : null}
         >
           <i
