@@ -15,10 +15,9 @@ const TARGET = rdflib.sym('https://robbevanherck.be/#me');
 
 function App() {
   const [graph, setGraph] = useState(rdflib.graph());
-  const [debugEmptyGraph, setDebugEmptyGraph] = useState(false);
 
   const engine = new QueryEngine();
-  if (!debugEmptyGraph && (!graph || graph.length === 0)) {
+  if (!graph || graph.length === 0) {
     engine.queryQuads(`
       CONSTRUCT WHERE {
         ?s ?p ?o
@@ -37,10 +36,6 @@ function App() {
       ).then(setGraph);
   }
 
-  if (debugEmptyGraph && (graph && graph.length !== 0)) {
-    setGraph(rdflib.graph());
-  }
-
   function getValue(predicates) {
     let value;
     predicates.forEach(predicate => {
@@ -50,7 +45,7 @@ function App() {
   }
 
   function createElement(type, predicates, props, childrenfn, defaultValue="Loading...") {
-    let value = getValue(predicates);
+    const value = getValue(predicates);
     return React.createElement(
       type,
       {
@@ -77,13 +72,6 @@ function App() {
 
   return (
     <div>
-      <input
-        id="debugEmptyGraph"
-        type="checkbox"
-        checked={debugEmptyGraph}
-        onChange={e => setDebugEmptyGraph(e.target.checked)}
-      />
-      <label htmlFor="debugEmptyGraph">(Debug) use empty graph</label>
       <Profile
         createElement={(p, t, s, c, d) => createElement(p, t, s, c, d)}
         createImage={(p, s, d) => createImage(p, s, d)}
