@@ -2,8 +2,9 @@ import './App.scss'
 
 import React, { useState } from 'react';
 
-import { QueryEngine } from '@comunica/query-sparql';
 import * as rdflib from 'rdflib';
+
+// import {  } from "@inrupt/solid-client";
 
 import { comunicaQuadToRdflibObject } from './util.js';
 
@@ -12,39 +13,33 @@ import Profile from './components/Profile.jsx';
 // TODO: make this a config
 const SOURCES = [
   'https://solid.robbevanherck.be/robbevanherck/profile/card',
+  'https://solid.robbevanherck.be/robbevanherck/profile/card-private',
 ];
-const TARGET = rdflib.sym('https://robbevanherck.be/#me');
+const TARGET = rdflib.sym('https://robbevanherck.be#me');
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [graph, setGraph] = useState(rdflib.graph());
 
-  const engine = new QueryEngine();
-  if (!graph || graph.length === 0) {
-    engine.queryQuads(`
-      CONSTRUCT WHERE {
-        ?s ?p ?o
-      }`, {
-        sources: SOURCES,
-      }).then(
-        bindingStream => bindingStream.toArray()
-      ).then(
-        bindings => {
-          const store = rdflib.graph();
-          bindings.forEach(binding => {
-            store.add(comunicaQuadToRdflibObject(binding));
-          });
-          return store;
+  if (!loading) {
+    setLoading(true);
+    const newGraph = rdflib.graph();
+    const fetcher = new rdflib.Fetcher(newGraph, {});
+    SOURCES.forEach((source) => {
+      fetcher.nowOrWhenFetched(source, (ok, body, response) => {
+        if (ok) {
+          console.log('fetched', source);
+          setGraph(newGraph);
         }
-      ).then(setGraph);
+      });
+    });
   }
 
   return (
-    <div>
-      <Profile
-        graph={graph}
-        user={TARGET}
-      />
-    </div>
+    <Profile
+      graph={graph}
+      user={TARGET}
+    />
   )
 }
 
