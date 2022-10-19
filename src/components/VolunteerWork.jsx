@@ -38,13 +38,13 @@ export default function VolunteerWork(props) {
               </span>
             </a>
             &nbsp;(
-            <time property={CV('startDate').value} datetime={entry.started}>
+            <time property={CV('startDate').value} dateTime={entry.started}>
               {entry.started}
             </time>
             &nbsp;-&nbsp;
             {
               entry.ended
-              ? <time property={CV('endDate').value} datetime={entry.ended}>
+              ? <time property={CV('endDate').value} dateTime={entry.ended}>
                   {entry.ended}
                 </time>
               : <span property={CV('endDate').value}>now</span>
