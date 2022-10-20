@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import * as rdflib from 'rdflib';
 
-import { login, handleIncomingRedirect, fetch as authFetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
+import { login, handleIncomingRedirect, fetch as authFetch, logout, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 
 import Profile from './components/Profile.jsx';
 import SideBar from './components/SideBar.jsx';
@@ -24,10 +24,26 @@ function doLogin(solidUri) {
   });
 }
 
+function doLogout(setGraph, setLoggedInWebId) {
+  logout().then(() => {
+    setGraph(rdflib.graph());
+    setLoggedInWebId(null);
+  });
+}
+
 function App() {
   const [graph, setGraph] = useState(rdflib.graph());
+  const [loggedinWebId, setLoggedinWebId] = useState(null);
 
   handleIncomingRedirect().then(() => {
+    if (loggedinWebId && !getDefaultSession().info.isLoggedIn) {
+      setLoggedinWebId(null);
+    }
+
+    if (!loggedinWebId && getDefaultSession().info.isLoggedIn) {
+      setLoggedinWebId(getDefaultSession().info.webId);
+    }
+
     if (graph.length === 0) {
       const newGraph = rdflib.graph();
       const fetcher = new rdflib.Fetcher(newGraph, {
@@ -48,8 +64,17 @@ function App() {
     <SideBar
       key={1}
       login={(uri) => {
-        doLogin(uri)
+        doLogin(
+          uri
+        )
       }}
+      logout={() => {
+        doLogout(
+          (g) => setGraph(g),
+          (id) => setLoggedinWebId(id)
+        )
+      }}
+      loggedInWebId={loggedinWebId}
     />,
     <Profile
       graph={graph}

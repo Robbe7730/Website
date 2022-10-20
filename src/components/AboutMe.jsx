@@ -1,10 +1,13 @@
 import { FOAF, SCHEMA } from "../namespaces.js"
 import { useState } from "react";
 
-import { fetch as authFetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
+import { fetch as authFetch } from "@inrupt/solid-client-authn-browser";
+
+import { findName } from "../util.js";
 
 import ContactItems from "./ContactItems.jsx"
 
+let loadedImage;
 
 export default function AboutMe(props) {
   const { user, graph } = props;
@@ -12,38 +15,22 @@ export default function AboutMe(props) {
   const [imageUri, setImageUri] = useState(null);
 
   const image = graph.anyValue(user, FOAF("img")) || graph.anyValue(user, SCHEMA("image"));
-  let name = (
-    graph.anyValue(user, FOAF("name")) ||
-    graph.anyValue(user, SCHEMA("name"))
-  );
-
-  if (image && !imageUri) {
+  if (image && image !== loadedImage) {
     authFetch(image)
       .then(response => response.blob())
       .then(blob => URL.createObjectURL(blob))
-      .then(setImageUri)
+      .then((uri) => {
+        loadedImage = image;
+        setImageUri(uri);
+       })
       .catch(err => {
         console.log(err);
+        loadedImage = null;
         setImageUri(null);
       });
   }
 
-  if (!name) {
-    const firstName = (
-      graph.anyValue(user, SCHEMA("givenName")) ||
-        graph.anyValue(user, FOAF("firstName")) ||
-        graph.anyValue(user, FOAF("givenName"))
-    );
-    const lastName = (
-      graph.anyValue(user, SCHEMA("familyName")) ||
-        graph.anyValue(user, FOAF("surname")) ||
-        graph.anyValue(user, FOAF("family_name"))
-    );
-
-    if (firstName && lastName) {
-      name = `${firstName} ${lastName}`;
-    }
-  }
+  const name = findName(graph, user);
 
   return (
     <header id="about-me">
