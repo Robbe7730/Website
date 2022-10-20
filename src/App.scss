@@ -159,6 +159,10 @@ a {
             content: attr(marker) " ";
             font-weight: bold;
         }
+
+        > span:not(:first-child) {
+            margin-left: 0.5ch;
+        }
     }
 }
 
