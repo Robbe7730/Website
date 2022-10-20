@@ -1,20 +1,27 @@
-import * as rdflib from 'rdflib';
+import { FOAF, SCHEMA } from "./namespaces.js";
 
-export function comunicaObjectToRdflibObject(obj) {
-  if (obj.termType === 'NamedNode') {
-    return rdflib.sym(obj.value);
-  } else if (obj.termType === 'Literal') {
-    return rdflib.literal(obj.value, obj.language, obj.datatype);
-  } else if (obj.termType === 'BlankNode') {
-    return rdflib.blankNode(obj.value);
-  } else {
-    throw new Error('Unknown term type: ' + obj.termType);
-  }
-}
+export function findName(graph, uri) {
+    let name = (
+        graph.anyValue(uri, FOAF("name")) ||
+        graph.anyValue(uri, SCHEMA("name"))
+    );
 
-export function comunicaQuadToRdflibObject(quad) {
-  const subject = comunicaObjectToRdflibObject(quad.subject);
-  const predicate = comunicaObjectToRdflibObject(quad.predicate);
-  const object = comunicaObjectToRdflibObject(quad.object);
-  return rdflib.st(subject, predicate, object);
+    if (!name) {
+        const firstName = (
+            graph.anyValue(uri, SCHEMA("givenName")) ||
+            graph.anyValue(uri, FOAF("firstName")) ||
+            graph.anyValue(uri, FOAF("givenName"))
+        );
+        const lastName = (
+            graph.anyValue(uri, SCHEMA("familyName")) ||
+            graph.anyValue(uri, FOAF("surname")) ||
+            graph.anyValue(uri, FOAF("family_name"))
+        );
+
+        if (firstName && lastName) {
+            name = `${firstName} ${lastName}`;
+        }
+    }
+
+    return name;
 }

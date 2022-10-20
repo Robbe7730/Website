@@ -2,85 +2,86 @@ import './App.scss'
 
 import React, { useState } from 'react';
 
-import { QueryEngine } from '@comunica/query-sparql';
 import * as rdflib from 'rdflib';
 
-import { comunicaQuadToRdflibObject } from './util.js';
+import { login, handleIncomingRedirect, fetch as authFetch, logout, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 
 import Profile from './components/Profile.jsx';
+import SideBar from './components/SideBar.jsx';
 
 // TODO: make this a config
-const SOURCES = ['https://solid.robbevanherck.be/robbevanherck/profile/card'];
-const TARGET = rdflib.sym('https://robbevanherck.be/#me');
+const SOURCES = [
+  'https://solid.robbevanherck.be/robbevanherck/profile/card-private',
+  'https://solid.robbevanherck.be/robbevanherck/profile/card',
+];
+const TARGET = rdflib.sym('https://robbevanherck.be#me');
+
+function doLogin(solidUri) {
+  login({
+    oidcIssuer: solidUri,
+    redirectUrl: window.location.href,
+    clientName: "My CV"
+  });
+}
+
+function doLogout(setGraph, setLoggedInWebId) {
+  logout().then(() => {
+    setGraph(rdflib.graph());
+    setLoggedInWebId(null);
+  });
+}
 
 function App() {
   const [graph, setGraph] = useState(rdflib.graph());
+  const [loggedinWebId, setLoggedinWebId] = useState(null);
 
-  const engine = new QueryEngine();
-  if (!graph || graph.length === 0) {
-    engine.queryQuads(`
-      CONSTRUCT WHERE {
-        ?s ?p ?o
-      }`, {
-        sources: SOURCES,
-      }).then(
-        bindingStream => bindingStream.toArray()
-      ).then(
-        bindings => {
-          const store = rdflib.graph();
-          bindings.forEach(binding => {
-            store.add(comunicaQuadToRdflibObject(binding));
-          });
-          return store;
-        }
-      ).then(setGraph);
-  }
+  handleIncomingRedirect().then(() => {
+    if (loggedinWebId && !getDefaultSession().info.isLoggedIn) {
+      setLoggedinWebId(null);
+    }
 
-  function getValue(predicates) {
-    let value;
-    predicates.forEach(predicate => {
-        value = value || graph.any(TARGET, predicate);
-    })
-    return value;
-  }
+    if (!loggedinWebId && getDefaultSession().info.isLoggedIn) {
+      setLoggedinWebId(getDefaultSession().info.webId);
+    }
 
-  function createElement(type, predicates, props, childrenfn, defaultValue="Loading...") {
-    const value = getValue(predicates);
-    return React.createElement(
-      type,
-      {
-        className: value ? undefined : 'loading',
-        property: value ? predicates.map(p => p.value).join(' ') : undefined,
-        ...props
-      },
-      childrenfn ? childrenfn(value?.value || defaultValue) : value?.value || defaultValue
-    );
-  }
+    if (graph.length === 0) {
+      const newGraph = rdflib.graph();
+      const fetcher = new rdflib.Fetcher(newGraph, {
+        fetch: authFetch
+      });
 
-  function createImage(predicates, props, defaultValue) {
-    const value = getValue(predicates);
-    return React.createElement(
-      "img",
-      {
-        className: value ? undefined : 'loading',
-        src: value?.value || defaultValue,
-        property: value ? predicates.map(p => p.value).join(' ') : undefined,
-        ...props
-      },
-    );
-  }
+      Promise.all(SOURCES.map((source) => {
+        return fetcher.load(source).catch((e) => {
+          console.error("Could not fetch ", source);
+        });
+      })).then(() => {
+        setGraph(newGraph);
+      });
+    }
+  })
 
-  return (
-    <div>
-      <Profile
-        createElement={(p, t, s, c, d) => createElement(p, t, s, c, d)}
-        createImage={(p, s, d) => createImage(p, s, d)}
-        getValue={p => getValue(p)}
-        graph={graph}
-        user={TARGET}
-      />
-    </div>
-  )
+  return [
+    <SideBar
+      key={1}
+      login={(uri) => {
+        doLogin(
+          uri
+        )
+      }}
+      logout={() => {
+        doLogout(
+          (g) => setGraph(g),
+          (id) => setLoggedinWebId(id)
+        )
+      }}
+      loggedInWebId={loggedinWebId}
+    />,
+    <Profile
+      graph={graph}
+      user={TARGET}
+      key={2}
+    />
+  ]
 }
 
 export default App

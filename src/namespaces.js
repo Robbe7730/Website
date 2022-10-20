@@ -5,3 +5,4 @@ export const FOAF = Namespace('http://xmlns.com/foaf/0.1/');
 export const SCHEMA = Namespace('http://schema.org/');
 export const CV = Namespace('http://rdfs.org/resume-rdf/cv.rdfs#');
 export const CVB = Namespace('http://rdfs.org/resume-rdf/base.rdfs#');
+export const OWL = Namespace('http://www.w3.org/2002/07/owl#');

@@ -9,7 +9,7 @@ import Achievements from './Achievements.jsx';
 
 export default function Profile(props) {
   return (
-    <div>
+    <div id="profile">
       <AboutMe {...props}/>
       <main>
         <Page>

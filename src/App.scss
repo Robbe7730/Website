@@ -7,6 +7,11 @@ $about-height: 150px;
 // ----- GENERAL -----
 
 body {
+    margin: 0;
+    font: 11pt/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#profile {
     @media print {
         padding: 2cm !important;
     }
@@ -14,7 +19,6 @@ body {
         max-width: 800px;
         margin: 0 auto;
     }
-    font: 11pt/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 h1 {
@@ -196,4 +200,87 @@ a {
             }
         }
     }
+}
+
+// ----- SIDEBAR -----
+
+$sidebar-width: 20vw;
+$sidebar-color: #e0e0e0;
+
+#sidebar {
+    position:fixed;
+    background-color: $sidebar-color;
+    box-shadow: 2px 2px 3px #999;
+
+    opacity: 0.8;
+
+    padding-top: 1em;
+    z-index: 1;
+}
+
+#sidebar-toggle {
+    position:fixed;
+    width:40px;
+    height:40px;
+
+    background-color: $sidebar-color;
+    color:#777;
+    box-shadow: 2px 2px 3px #999;
+
+    top:40px;
+    text-align:center;
+    border-radius: 0 7px 7px 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sidebar-content.closed {
+    display: none;
+}
+
+#sidebar-content {
+    width: $sidebar-width;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    >* {
+        margin: 1em 0 0 0;
+        text-align: center;
+        max-width: $sidebar-width;
+    }
+}
+
+#sidebar-toggle.open {
+    left: $sidebar-width;
+}
+#sidebar-toggle.closed {
+    left:0px;
+}
+
+.sidebar.closed {
+    display: none;
+}
+
+.sidebar-header {
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+#provider-uri {
+    width: calc($sidebar-width - 2em);
+    padding: 0;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+.login-button {
+    float: right;
+    margin-right: 1em;
+}
+.logout-button {
+    float: left;
+    margin-left: 1em;
 }

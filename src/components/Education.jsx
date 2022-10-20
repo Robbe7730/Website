@@ -61,7 +61,7 @@ export default function Education(props) {
          (
            <li>
              <time
-               datetime={educations[0].endDate}
+               dateTime={educations[0].endDate}
                className="education-year"
              >
                {educations[0].endDate}
@@ -106,19 +106,20 @@ export default function Education(props) {
                 {education.description}
               </span>
               <time
-                datetime={education.startDate}
+                dateTime={education.startDate}
                 className="education-year"
                 property={CV("eduStartDate").value}
               >
                 {education.startDate}
               </time>
               {education.endDate && (
-                <span
+                <time
                   hidden
+                  dateTime={education.endDate}
                   property={CV("eduGradDate").value}
                 >
                   {education.endDate}
-                </span>
+                </time>
               )}
             </li>
           )}
