@@ -5,7 +5,7 @@ export default function Achievements(props) {
 
   const achievements = graph.each(user, SCHEMA("hasCredential")).map(uri => {
     return {
-      title: graph.anyValue(uri, SCHEMA("name")),
+      title: graph.anyValue(uri, SCHEMA("name")) || graph.anyValue(uri, FOAF('name')),
       description: graph.anyValue(uri, SCHEMA("description")).trim(),
     }
   });
@@ -20,7 +20,9 @@ export default function Achievements(props) {
           typeof={SCHEMA("EducationalOccupationalCredential").value}
           key={i}
         >
-          <h3 property={SCHEMA('name').value}>{achievement.title}</h3>
+          <h3 property={SCHEMA('name').value + " " + FOAF('name').value}>
+            {achievement.title}
+          </h3>
           <p property={SCHEMA('description').value}>{achievement.description}</p>
         </div>
       ))}
