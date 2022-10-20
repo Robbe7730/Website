@@ -13,7 +13,7 @@ body {
 
 #profile {
     @media print {
-        padding: 2cm !important;
+        padding: 1.5cm !important;
     }
     @media screen {
         max-width: 800px;
@@ -216,6 +216,10 @@ $sidebar-color: #e0e0e0;
 
     padding-top: 1em;
     z-index: 1;
+
+    @media print {
+        display: none;
+    }
 }
 
 #sidebar-toggle {
