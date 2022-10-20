@@ -18,16 +18,8 @@ export default function AboutMe(props) {
   );
 
   if (image && !imageUri) {
-    console.log(getDefaultSession().info.isLoggedIn);
-    authFetch("https://solid.robbevanherck.be/robbevanherck/profile/card-private")
-      .then((response) => response.text())
-      .then(console.log);
     authFetch(image)
       .then(response => response.blob())
-      .then((data) => {
-        console.log(data);
-        return data;
-      })
       .then(blob => URL.createObjectURL(blob))
       .then(setImageUri)
       .catch(err => {
@@ -60,10 +52,11 @@ export default function AboutMe(props) {
         src={imageUri || "https://via.placeholder.com/150x150"}
         alt={name || "Profile picture"}
         property={image ? FOAF("img").value + " " + SCHEMA("image").value : undefined}
+        resource={image}
       />
       <div id="name-contact">
         <h1
-          property={name ? FOAF("name") + " " + SCHEMA("name") : undefined}
+          property={name ? FOAF("name").value + " " + SCHEMA("name").value : undefined}
           className={name ? undefined : 'loading'}
         >
           {name || "Loading..."}
