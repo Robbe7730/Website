@@ -1,4 +1,4 @@
-import { SCHEMA } from '../namespaces.js'
+import { SCHEMA, FOAF } from '../namespaces.js'
 
 export default function Achievements(props) {
   const { graph, user } = props;

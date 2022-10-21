@@ -73,6 +73,11 @@ export default function SideBar(props) {
             >Log out</button>
           )}
         </span>
+        <span className="sidebar-icons">
+          <a href="https://github.com/Robbe7730/Website">
+            <i className="fab fa-github fa-xl"/>
+          </a>
+        </span>
       </div>
       <a
         id="sidebar-toggle"
