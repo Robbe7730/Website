@@ -100,7 +100,7 @@ Entries are `schema:EducationalOccupationalCredential`s found by
 ## Hacks
 
 - Using the order in which data is loaded to allow "overriding" data in
-  `card-private` (e.g. in public I define `schema:image`, gut in private
+  `card-private` (e.g. in public I define `schema:image`, but in private
   `foaf:img`, since it checks for `foaf:img` first, this is the one that gets
   rendered if private data is loaded)
 - Using the order of the entries in the turtle file to format the CV
