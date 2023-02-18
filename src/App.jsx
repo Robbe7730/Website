@@ -11,8 +11,8 @@ import SideBar from './components/SideBar.jsx';
 
 // TODO: make this a config
 const SOURCES = [
-  'https://solid.robbevanherck.be/robbevanherck/profile/card-private',
-  'https://solid.robbevanherck.be/robbevanherck/profile/card',
+  // 'https://solid.robbevanherck.be/robbevanherck/profile/card-private',
+  'https://solid.robbevanherck.be/profile/card',
 ];
 const TARGET = rdflib.sym('https://robbevanherck.be#me');
 
